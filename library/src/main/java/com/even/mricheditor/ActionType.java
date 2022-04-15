@@ -3,12 +3,7 @@ package com.even.mricheditor;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Action Type
- *
- * @author even.wu
- * @date 8/8/17
- */
+
 
 public enum ActionType {
     NONE(0),

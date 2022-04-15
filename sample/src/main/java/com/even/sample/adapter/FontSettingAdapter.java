@@ -1,17 +1,14 @@
 package com.even.sample.adapter;
 
 import androidx.annotation.Nullable;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.even.sample.R;
+
 import java.util.List;
 
-/**
- * Font Setting Adapter
- *
- * @author even.wu
- * @date 9/8/17
- */
+
 
 public class FontSettingAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
 

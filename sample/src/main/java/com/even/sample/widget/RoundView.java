@@ -5,15 +5,10 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import androidx.annotation.Nullable;
 import com.even.sample.R;
-
-/**
- * Round View
- * Created by even.wu on 8/8/17.
- */
 
 public class RoundView extends View {
     private Paint mPaint;

@@ -3,15 +3,10 @@ package com.even.mricheditor;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 import com.google.gson.Gson;
+
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Rich Editor Callback
- *
- * @author even.wu
- * @date 8/8/17
- */
 
 public abstract class RichEditorCallback {
     private Gson gson = new Gson();
@@ -20,22 +15,24 @@ public abstract class RichEditorCallback {
     private OnGetHtmlListener onGetHtmlListener;
 
     private List<ActionType> mFontBlockGroup =
-        Arrays.asList(ActionType.NORMAL, ActionType.H1, ActionType.H2, ActionType.H3, ActionType.H4,
-            ActionType.H5, ActionType.H6);
+            Arrays.asList(ActionType.NORMAL, ActionType.H1, ActionType.H2, ActionType.H3, ActionType.H4,
+                    ActionType.H5, ActionType.H6);
     private List<ActionType> mTextAlignGroup =
-        Arrays.asList(ActionType.JUSTIFY_LEFT, ActionType.JUSTIFY_CENTER, ActionType.JUSTIFY_RIGHT,
-            ActionType.JUSTIFY_FULL);
+            Arrays.asList(ActionType.JUSTIFY_LEFT, ActionType.JUSTIFY_CENTER, ActionType.JUSTIFY_RIGHT,
+                    ActionType.JUSTIFY_FULL);
     private List<ActionType> mListStyleGroup =
-        Arrays.asList(ActionType.ORDERED, ActionType.UNORDERED);
+            Arrays.asList(ActionType.ORDERED, ActionType.UNORDERED);
 
-    @JavascriptInterface public void returnHtml(String html) {
+    @JavascriptInterface
+    public void returnHtml(String html) {
         this.html = html;
         if (onGetHtmlListener != null) {
             onGetHtmlListener.getHtml(html);
         }
     }
 
-    @JavascriptInterface public void updateCurrentStyle(String currentStyle) {
+    @JavascriptInterface
+    public void updateCurrentStyle(String currentStyle) {
         FontStyle fontStyle = gson.fromJson(currentStyle, FontStyle.class);
         if (fontStyle != null) {
             updateStyle(fontStyle);
@@ -44,7 +41,7 @@ public abstract class RichEditorCallback {
 
     private void updateStyle(FontStyle fontStyle) {
         if (mFontStyle.getFontFamily() == null || !mFontStyle.getFontFamily()
-            .equals(fontStyle.getFontFamily())) {
+                .equals(fontStyle.getFontFamily())) {
             if (!TextUtils.isEmpty(fontStyle.getFontFamily())) {
                 String font = fontStyle.getFontFamily().split(",")[0].replace("\"", "");
                 notifyFontStyleChange(ActionType.FAMILY, font);
@@ -52,14 +49,14 @@ public abstract class RichEditorCallback {
         }
 
         if (mFontStyle.getFontForeColor() == null || !mFontStyle.getFontForeColor()
-            .equals(fontStyle.getFontForeColor())) {
+                .equals(fontStyle.getFontForeColor())) {
             if (!TextUtils.isEmpty(fontStyle.getFontForeColor())) {
                 notifyFontStyleChange(ActionType.FORE_COLOR, fontStyle.getFontForeColor());
             }
         }
 
         if (mFontStyle.getFontBackColor() == null || !mFontStyle.getFontBackColor()
-            .equals(fontStyle.getFontBackColor())) {
+                .equals(fontStyle.getFontBackColor())) {
             if (!TextUtils.isEmpty(fontStyle.getFontBackColor())) {
                 notifyFontStyleChange(ActionType.BACK_COLOR, fontStyle.getFontBackColor());
             }
@@ -78,7 +75,7 @@ public abstract class RichEditorCallback {
 
         if (mFontStyle.getLineHeight() != fontStyle.getLineHeight()) {
             notifyFontStyleChange(ActionType.LINE_HEIGHT,
-                String.valueOf(fontStyle.getLineHeight()));
+                    String.valueOf(fontStyle.getLineHeight()));
         }
 
         if (mFontStyle.isBold() != fontStyle.isBold()) {
@@ -99,12 +96,12 @@ public abstract class RichEditorCallback {
 
         if (mFontStyle.isSuperscript() != fontStyle.isSuperscript()) {
             notifyFontStyleChange(ActionType.SUPERSCRIPT,
-                String.valueOf(fontStyle.isSuperscript()));
+                    String.valueOf(fontStyle.isSuperscript()));
         }
 
         if (mFontStyle.isStrikethrough() != fontStyle.isStrikethrough()) {
             notifyFontStyleChange(ActionType.STRIKETHROUGH,
-                String.valueOf(fontStyle.isStrikethrough()));
+                    String.valueOf(fontStyle.isStrikethrough()));
         }
 
         if (mFontStyle.getFontBlock() != fontStyle.getFontBlock()) {

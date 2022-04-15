@@ -1,46 +1,63 @@
 package com.even.sample.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.even.sample.R;
 
-/**
- * Edit Table Fragment
- *
- * @author even.wu
- * @date 10/8/17
- */
 
+@SuppressLint("SetJavaScriptEnabled")
 public class EditTableFragment extends Fragment {
-    @BindView(R.id.et_rows) EditText etRows;
-    @BindView(R.id.et_cols) EditText etCols;
-
+    private EditText etRows;
+    private EditText etCols;
+    private Button btn_ok;
+    private ImageView iv_back;
     private OnTableListener mOnTableListener;
 
-    @Nullable @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-        @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_edit_table, null);
-        ButterKnife.bind(this, rootView);
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_edit_table, container, false);
+        etRows = rootView.findViewById(R.id.et_rows);
+        etCols = rootView.findViewById(R.id.et_cols);
+        btn_ok = rootView.findViewById(R.id.btn_ok);
+        iv_back = rootView.findViewById(R.id.iv_back);
+
+        btn_ok.setOnClickListener(v -> {
+            onClickOK();
+        });
+
+        iv_back.setOnClickListener(v -> {
+            onClickBack();
+        });
         return rootView;
     }
 
-    @OnClick(R.id.iv_back) void onClickBack() {
+    void onClickBack() {
+        assert getFragmentManager() != null;
         getFragmentManager().beginTransaction().remove(this).commit();
     }
 
-    @OnClick(R.id.btn_ok) void onClickOK() {
+    void onClickOK() {
         if (mOnTableListener != null) {
-            mOnTableListener.onTableOK(Integer.parseInt(etRows.getText().toString()),
-                Integer.parseInt(etCols.getText().toString()));
+//            try {
+                mOnTableListener.onTableOK(Integer.parseInt(etRows.getText().toString()), Integer.parseInt(etCols.getText().toString()));
+                Log.e("Row*Col = ", "" + Integer.parseInt(etRows.getText().toString()) * Integer.parseInt(etCols.getText().toString()));
+                Toast.makeText(getContext(), "" + Integer.parseInt(etRows.getText().toString()) * Integer.parseInt(etCols.getText().toString()), Toast.LENGTH_LONG).show();
+//            } catch (NumberFormatException e) {
+//                Toast.makeText(getContext(), "no data insrted" + e.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
             onClickBack();
         }
     }

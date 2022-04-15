@@ -1,21 +1,16 @@
 package com.even.mricheditor;
 
 import android.os.Build;
-import androidx.annotation.NonNull;
 import android.webkit.WebView;
+import androidx.annotation.NonNull;
 
-/**
- * Rich Editor Action
- *
- * @author even.wu
- * @date 8/8/17
- */
+
 
 public class RichEditorAction {
-    private WebView mWebView;
+    private WebView webView;
 
     public RichEditorAction(WebView webView) {
-        this.mWebView = webView;
+        this.webView = webView;
     }
 
     public void undo() {
@@ -189,17 +184,17 @@ public class RichEditorAction {
         load("javascript:pasteHTML('" + html + "')");
     }
 
-    public void refreshHtml(@NonNull RichEditorCallback callback,
-        @NonNull RichEditorCallback.OnGetHtmlListener onGetHtmlListener) {
+    public void refreshHtml(@NonNull  RichEditorCallback callback,
+        @NonNull  RichEditorCallback.OnGetHtmlListener onGetHtmlListener) {
         callback.setOnGetHtmlListener(onGetHtmlListener);
         load("javascript:refreshHTML()");
     }
 
     private void load(String trigger) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            this.mWebView.evaluateJavascript(trigger, null);
+            this.webView.evaluateJavascript(trigger, null);
         } else {
-            this.mWebView.loadUrl(trigger);
+            this.webView.loadUrl(trigger);
         }
     }
 }

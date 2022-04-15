@@ -2,22 +2,20 @@ package com.even.mricheditor.ui;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.content.ContextCompat;
+
 import com.even.mricheditor.ActionType;
 import com.even.mricheditor.R;
 import com.even.mricheditor.RichEditorAction;
 
-/**
- * The Interface of Action Button
- * Created by even.wu on 22/8/17.
- */
 
 public class ActionImageView extends AppCompatImageView {
-    private ActionType mActionType;
-    private RichEditorAction mRichEditorAction;
+    private  ActionType mActionType;
+    private  RichEditorAction mRichEditorAction;
     private Context mContext;
 
     private boolean enabled = true;
@@ -45,15 +43,15 @@ public class ActionImageView extends AppCompatImageView {
         this.mContext = context;
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ActionImageView);
         mActionType =
-            ActionType.fromInteger(ta.getInteger(R.styleable.ActionImageView_actionType, 0));
+                 ActionType.fromInteger(ta.getInteger(R.styleable.ActionImageView_actionType, 0));
         ta.recycle();
     }
 
-    public ActionType getActionType() {
+    public  ActionType getActionType() {
         return mActionType;
     }
 
-    public void setActionType(ActionType mActionType) {
+    public void setActionType( ActionType mActionType) {
         this.mActionType = mActionType;
     }
 
@@ -61,7 +59,7 @@ public class ActionImageView extends AppCompatImageView {
         return mRichEditorAction;
     }
 
-    public void setRichEditorAction(RichEditorAction mRichEditorAction) {
+    public void setRichEditorAction( RichEditorAction mRichEditorAction) {
         this.mRichEditorAction = mRichEditorAction;
     }
 
@@ -238,9 +236,10 @@ public class ActionImageView extends AppCompatImageView {
         this.deactivatedColor = deactivatedColor;
     }
 
-    public void notifyFontStyleChange(final ActionType type, final String value) {
+    public void notifyFontStyleChange(final  ActionType type, final String value) {
         post(new Runnable() {
-            @Override public void run() {
+            @Override
+            public void run() {
                 switch (type) {
                     case BOLD:
                     case ITALIC:
@@ -262,7 +261,7 @@ public class ActionImageView extends AppCompatImageView {
                     case ORDERED:
                     case UNORDERED:
                         setColorFilter(ContextCompat.getColor(mContext,
-                            Boolean.parseBoolean(value) ? getActivatedColor() : getDeactivatedColor()));
+                                Boolean.parseBoolean(value) ? getActivatedColor() : getDeactivatedColor()));
                         break;
                     default:
                         break;

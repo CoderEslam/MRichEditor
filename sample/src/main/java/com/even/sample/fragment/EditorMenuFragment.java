@@ -1,21 +1,17 @@
 package com.even.sample.fragment;
 
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.core.content.ContextCompat;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.even.mricheditor.ActionType;
 import com.even.sample.R;
@@ -27,24 +23,37 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Editor Menu Fragment
- * Created by even.wu on 8/8/17.
- */
 
-public class EditorMenuFragment extends Fragment {
+public class EditorMenuFragment extends Fragment implements View.OnClickListener {
     private View rootView;
-    @BindView(R.id.tv_font_size)
     TextView tvFontSize;
-    @BindView(R.id.tv_font_name)
     TextView tvFontName;
-    @BindView(R.id.tv_font_spacing)
     TextView tvFontSpacing;
-    @BindView(R.id.cpv_font_text_color)
     ColorPaletteView cpvFontTextColor;
-    @BindView(R.id.cpv_highlight_color)
     ColorPaletteView cpvHighlightColor;
-
+    private LinearLayout ll_font_size, ll_line_height;
+    private ImageView iv_action_bold,
+            iv_action_italic,
+            iv_action_underline,
+            iv_action_strikethrough,
+            iv_action_justify_left,
+            iv_action_justify_center,
+            iv_action_justify_right,
+            iv_action_justify_full,
+            iv_action_subscript,
+            iv_action_superscript,
+            iv_action_insert_numbers,
+            iv_action_insert_bullets,
+            iv_action_indent,
+            iv_action_outdent,
+            iv_action_code_view,
+            iv_action_blockquote,
+            iv_action_code_block,
+            iv_action_insert_image,
+            iv_action_insert_link,
+            iv_action_table,
+            iv_action_line;
+    private LinearLayout ll_h1, ll_h2, ll_h3, ll_h4, ll_h5, ll_h6, ll_normal;
     private OnActionPerformListener mActionClickListener;
 
     private final static Pattern PATTERN_RGB =
@@ -88,8 +97,79 @@ public class EditorMenuFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_editor_menu, null);
-        ButterKnife.bind(this, rootView);
+        cpvFontTextColor = rootView.findViewById(R.id.cpv_font_text_color);
+        cpvHighlightColor = rootView.findViewById(R.id.cpv_highlight_color);
+        tvFontName = rootView.findViewById(R.id.tv_font_name);
+        tvFontSpacing = rootView.findViewById(R.id.tv_font_spacing);
+        tvFontSize = rootView.findViewById(R.id.tv_font_size);
+        ll_font_size = rootView.findViewById(R.id.ll_font_size);
+        ll_line_height = rootView.findViewById(R.id.ll_line_height);
+        iv_action_bold = rootView.findViewById(R.id.iv_action_bold);
+        iv_action_italic = rootView.findViewById(R.id.iv_action_italic);
+        iv_action_underline = rootView.findViewById(R.id.iv_action_underline);
+        iv_action_strikethrough = rootView.findViewById(R.id.iv_action_strikethrough);
+        iv_action_justify_left = rootView.findViewById(R.id.iv_action_justify_left);
+        iv_action_justify_center = rootView.findViewById(R.id.iv_action_justify_center);
+        iv_action_justify_right = rootView.findViewById(R.id.iv_action_justify_right);
+        iv_action_justify_full = rootView.findViewById(R.id.iv_action_justify_full);
+        iv_action_subscript = rootView.findViewById(R.id.iv_action_subscript);
+        iv_action_superscript = rootView.findViewById(R.id.iv_action_superscript);
+        iv_action_insert_numbers = rootView.findViewById(R.id.iv_action_insert_numbers);
+        iv_action_insert_bullets = rootView.findViewById(R.id.iv_action_insert_bullets);
+        iv_action_indent = rootView.findViewById(R.id.iv_action_indent);
+        iv_action_outdent = rootView.findViewById(R.id.iv_action_outdent);
+        iv_action_code_view = rootView.findViewById(R.id.iv_action_code_view);
+        iv_action_blockquote = rootView.findViewById(R.id.iv_action_blockquote);
+        iv_action_code_block = rootView.findViewById(R.id.iv_action_code_block);
+        ll_normal = rootView.findViewById(R.id.ll_normal);
+        iv_action_insert_image = rootView.findViewById(R.id.iv_action_insert_image);
+        iv_action_insert_link = rootView.findViewById(R.id.iv_action_insert_link);
+        iv_action_table = rootView.findViewById(R.id.iv_action_table);
+        iv_action_line = rootView.findViewById(R.id.iv_action_line);
+        ll_h1 = rootView.findViewById(R.id.ll_h1);
+        ll_h2 = rootView.findViewById(R.id.ll_h2);
+        ll_h3 = rootView.findViewById(R.id.ll_h3);
+        ll_h4 = rootView.findViewById(R.id.ll_h4);
+        ll_h5 = rootView.findViewById(R.id.ll_h5);
+        ll_h6 = rootView.findViewById(R.id.ll_h6);
+        iv_action_bold.setOnClickListener(this);
+        iv_action_italic.setOnClickListener(this);
+        iv_action_underline.setOnClickListener(this);
+        iv_action_strikethrough.setOnClickListener(this);
+        iv_action_justify_left.setOnClickListener(this);
+        iv_action_justify_center.setOnClickListener(this);
+        iv_action_justify_right.setOnClickListener(this);
+        iv_action_justify_full.setOnClickListener(this);
+        iv_action_subscript.setOnClickListener(this);
+        iv_action_superscript.setOnClickListener(this);
+        iv_action_insert_numbers.setOnClickListener(this);
+        iv_action_insert_bullets.setOnClickListener(this);
+        iv_action_indent.setOnClickListener(this);
+        iv_action_outdent.setOnClickListener(this);
+        iv_action_code_view.setOnClickListener(this);
+        iv_action_blockquote.setOnClickListener(this);
+        iv_action_code_block.setOnClickListener(this);
+        ll_normal.setOnClickListener(this);
+        iv_action_insert_image.setOnClickListener(this);
+        iv_action_insert_link.setOnClickListener(this);
+        ll_h1.setOnClickListener(this);
+        ll_h2.setOnClickListener(this);
+        ll_h3.setOnClickListener(this);
+        ll_h4.setOnClickListener(this);
+        ll_h5.setOnClickListener(this);
+        ll_h6.setOnClickListener(this);
         initView();
+
+        ll_font_size.setOnClickListener(v -> {
+            onClickFontSize();
+        });
+        ll_line_height.setOnClickListener(v -> {
+            onClickLineHeight();
+        });
+        tvFontName.setOnClickListener(v -> {
+            onClickFontFamily();
+        });
+
         return rootView;
     }
 
@@ -107,59 +187,18 @@ public class EditorMenuFragment extends Fragment {
         });
     }
 
-    @OnClick(R.id.ll_font_size)
     void onClickFontSize() {
         openFontSettingFragment(FontSettingFragment.TYPE_SIZE);
     }
 
-    @OnClick(R.id.ll_line_height)
     void onClickLineHeight() {
         openFontSettingFragment(FontSettingFragment.TYPE_LINE_HEIGHT);
     }
 
-    @OnClick(R.id.tv_font_name)
     void onClickFontFamily() {
         openFontSettingFragment(FontSettingFragment.TYPE_FONT_FAMILY);
     }
 
-    @OnClick({
-            R.id.iv_action_bold,
-            R.id.iv_action_italic,
-            R.id.iv_action_underline,
-            R.id.iv_action_strikethrough,
-            R.id.iv_action_justify_left,
-            R.id.iv_action_justify_center,
-            R.id.iv_action_justify_right,
-            R.id.iv_action_justify_full,
-            R.id.iv_action_subscript,
-            R.id.iv_action_superscript,
-            R.id.iv_action_insert_numbers,
-            R.id.iv_action_insert_bullets,
-            R.id.iv_action_indent,
-            R.id.iv_action_outdent,
-            R.id.iv_action_code_view,
-            R.id.iv_action_blockquote,
-            R.id.iv_action_code_block,
-            R.id.ll_normal,
-            R.id.ll_h1,
-            R.id.ll_h2,
-            R.id.ll_h3,
-            R.id.ll_h4,
-            R.id.ll_h5,
-            R.id.ll_h6,
-            R.id.iv_action_insert_image,
-            R.id.iv_action_insert_link,
-            R.id.iv_action_table,
-            R.id.iv_action_line
-    })
-    void onClickAction(View view) {
-        if (mActionClickListener == null) {
-            return;
-        }
-
-        ActionType type = mViewTypeMap.get(view.getId());
-        mActionClickListener.onActionPerform(type);
-    }
 
     private void openFontSettingFragment(final int type) {
         FontSettingFragment fontSettingFragment = new FontSettingFragment();
@@ -227,7 +266,7 @@ public class EditorMenuFragment extends Fragment {
                 case UNORDERED:
                     if (isActive) {
                         ((ImageView) view).setColorFilter(
-                                ContextCompat.getColor(getContext(), R.color.colorAccent));
+                                ContextCompat.getColor(getContext(), R.color.blue));
                     } else {
                         ((ImageView) view).setColorFilter(
                                 ContextCompat.getColor(getContext(), R.color.tintColor));
@@ -347,5 +386,15 @@ public class EditorMenuFragment extends Fragment {
                     Integer.valueOf(m.group(2)), Integer.valueOf(m.group(3)));
         }
         return null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (mActionClickListener == null) {
+            return;
+        }
+
+        ActionType type = mViewTypeMap.get(v.getId());
+        mActionClickListener.onActionPerform(type);
     }
 }

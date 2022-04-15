@@ -14,15 +14,17 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+
 import com.blankj.utilcode.util.FileIOUtils;
 import com.blankj.utilcode.util.KeyboardUtils;
+
+
 import com.even.mricheditor.ActionType;
 import com.even.mricheditor.RichEditorAction;
 import com.even.mricheditor.RichEditorCallback;
@@ -35,14 +37,25 @@ import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.view.CropImageView;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@SuppressLint("SetJavaScriptEnabled") public class RichEditorActivity extends AppCompatActivity {
-    @BindView(R.id.wv_container) WebView mWebView;
-    @BindView(R.id.fl_action) FrameLayout flAction;
-    @BindView(R.id.ll_action_bar_container) LinearLayout llActionBarContainer;
+
+@SuppressLint("SetJavaScriptEnabled")
+public class RichEditorActivity extends AppCompatActivity {
+    FrameLayout flAction;
+    LinearLayout llActionBarContainer;
+    private ImageView iv_action_insert_link;
+    private ImageView iv_get_html,
+            iv_action_undo,
+            iv_action_redo,
+            iv_action,
+            iv_action_txt_color,
+            iv_action_txt_bg_color,
+            iv_action_line_height,
+            iv_action_insert_image;
 
     private boolean isKeyboardShowing;
     private String htmlContent = "<p>Hello World</p>";
@@ -53,54 +66,80 @@ import java.util.List;
     private EditorMenuFragment mEditorMenuFragment;
 
     private List<ActionType> mActionTypeList =
-        Arrays.asList(ActionType.BOLD, ActionType.ITALIC, ActionType.UNDERLINE,
-            ActionType.STRIKETHROUGH, ActionType.SUBSCRIPT, ActionType.SUPERSCRIPT,
-            ActionType.NORMAL, ActionType.H1, ActionType.H2, ActionType.H3, ActionType.H4,
-            ActionType.H5, ActionType.H6, ActionType.INDENT, ActionType.OUTDENT,
-            ActionType.JUSTIFY_LEFT, ActionType.JUSTIFY_CENTER, ActionType.JUSTIFY_RIGHT,
-            ActionType.JUSTIFY_FULL, ActionType.ORDERED, ActionType.UNORDERED, ActionType.LINE,
-            ActionType.BLOCK_CODE, ActionType.BLOCK_QUOTE, ActionType.CODE_VIEW);
+            Arrays.asList(ActionType.BOLD, ActionType.ITALIC, ActionType.UNDERLINE,
+                    ActionType.STRIKETHROUGH, ActionType.SUBSCRIPT, ActionType.SUPERSCRIPT,
+                    ActionType.NORMAL, ActionType.H1, ActionType.H2, ActionType.H3, ActionType.H4,
+                    ActionType.H5, ActionType.H6, ActionType.INDENT, ActionType.OUTDENT,
+                    ActionType.JUSTIFY_LEFT, ActionType.JUSTIFY_CENTER, ActionType.JUSTIFY_RIGHT,
+                    ActionType.JUSTIFY_FULL, ActionType.ORDERED, ActionType.UNORDERED, ActionType.LINE,
+                    ActionType.BLOCK_CODE, ActionType.BLOCK_QUOTE, ActionType.CODE_VIEW);
 
     private List<Integer> mActionTypeIconList =
-        Arrays.asList(R.drawable.ic_format_bold, R.drawable.ic_format_italic,
-            R.drawable.ic_format_underlined, R.drawable.ic_format_strikethrough,
-            R.drawable.ic_format_subscript, R.drawable.ic_format_superscript,
-            R.drawable.ic_format_para, R.drawable.ic_format_h1, R.drawable.ic_format_h2,
-            R.drawable.ic_format_h3, R.drawable.ic_format_h4, R.drawable.ic_format_h5,
-            R.drawable.ic_format_h6, R.drawable.ic_format_indent_decrease,
-            R.drawable.ic_format_indent_increase, R.drawable.ic_format_align_left,
-            R.drawable.ic_format_align_center, R.drawable.ic_format_align_right,
-            R.drawable.ic_format_align_justify, R.drawable.ic_format_list_numbered,
-            R.drawable.ic_format_list_bulleted, R.drawable.ic_line, R.drawable.ic_code_block,
-            R.drawable.ic_format_quote, R.drawable.ic_code_review);
+            Arrays.asList(R.drawable.ic_format_bold,
+                    R.drawable.ic_format_italic,
+                    R.drawable.ic_format_underlined,
+                    R.drawable.ic_format_strikethrough,
+                    R.drawable.ic_format_subscript,
+                    R.drawable.ic_format_superscript,
+                    R.drawable.ic_format_para,
+                    R.drawable.ic_format_h1,
+                    R.drawable.ic_format_h2,
+                    R.drawable.ic_format_h3,
+                    R.drawable.ic_format_h4,
+                    R.drawable.ic_format_h5,
+                    R.drawable.ic_format_h6,
+                    R.drawable.ic_format_indent_decrease,
+                    R.drawable.ic_format_indent_increase,
+                    R.drawable.ic_format_align_left,
+                    R.drawable.ic_format_align_center,
+                    R.drawable.ic_format_align_right,
+                    R.drawable.ic_format_align_justify,
+                    R.drawable.ic_format_list_numbered,
+                    R.drawable.ic_format_list_bulleted,
+                    R.drawable.ic_line,
+                    R.drawable.ic_code_block,
+                    R.drawable.ic_format_quote,
+                    R.drawable.ic_code_review);
 
     private static final int REQUEST_CODE_CHOOSE = 0;
 
-    @Override protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_rich_editor);
-        ButterKnife.bind(this);
+        llActionBarContainer = findViewById(R.id.ll_action_bar_container);
+        flAction = findViewById(R.id.fl_action);
+        iv_action_insert_link = findViewById(R.id.iv_action_insert_link);
+        iv_get_html = findViewById(R.id.iv_get_html);
+        iv_action_undo = findViewById(R.id.iv_action_undo);
+        iv_action_redo = findViewById(R.id.iv_action_redo);
+        iv_action = findViewById(R.id.iv_action);
+        iv_action_txt_color = findViewById(R.id.iv_action_txt_color);
+        iv_action_txt_bg_color = findViewById(R.id.iv_action_txt_bg_color);
+        iv_action_line_height = findViewById(R.id.iv_action_line_height);
+        iv_action_insert_image = findViewById(R.id.iv_action_insert_image);
 
         initImageLoader();
         initView();
 
         int width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40,
-            getResources().getDisplayMetrics());
+                getResources().getDisplayMetrics());
         int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 9,
-            getResources().getDisplayMetrics());
+                getResources().getDisplayMetrics());
         for (int i = 0, size = mActionTypeList.size(); i < size; i++) {
-            final ActionImageView actionImageView = new ActionImageView(this);
+            ActionImageView actionImageView = new ActionImageView(RichEditorActivity.this);
             actionImageView.setLayoutParams(new LinearLayout.LayoutParams(width, width));
             actionImageView.setPadding(padding, padding, padding, padding);
             actionImageView.setActionType(mActionTypeList.get(i));
             actionImageView.setTag(mActionTypeList.get(i));
-            actionImageView.setActivatedColor(R.color.colorAccent);
+            actionImageView.setActivatedColor(R.color.blue);
             actionImageView.setDeactivatedColor(R.color.tintColor);
             actionImageView.setRichEditorAction(mRichEditorAction);
             actionImageView.setBackgroundResource(R.drawable.btn_colored_material);
             actionImageView.setImageResource(mActionTypeIconList.get(i));
             actionImageView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
+                @Override
+                public void onClick(View v) {
                     actionImageView.command();
                 }
             });
@@ -110,9 +149,7 @@ import java.util.List;
         mEditorMenuFragment = new EditorMenuFragment();
         mEditorMenuFragment.setActionClickListener(new MOnActionPerformListener(mRichEditorAction));
         FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction()
-            .add(R.id.fl_action, mEditorMenuFragment, EditorMenuFragment.class.getName())
-            .commit();
+        fm.beginTransaction().add(R.id.fl_action, mEditorMenuFragment, EditorMenuFragment.class.getName()).commit();
         KeyboardUtils.registerSoftInputChangedListener(this, height -> {
             isKeyboardShowing = height > 0;
             if (height > 0) {
@@ -123,6 +160,38 @@ import java.util.List;
             } else if (flAction.getVisibility() != View.VISIBLE) {
                 flAction.setVisibility(View.GONE);
             }
+        });
+
+        findViewById(R.id.iv_action_table).setOnClickListener(v -> {
+            onClickInsertTable();
+        });
+        iv_action_insert_link.setOnClickListener(v -> {
+            onClickInsertLink();
+        });
+        // TODO get HTML as text
+        iv_get_html.setOnClickListener(v -> {
+            onClickGetHtml();
+        });
+        iv_action_redo.setOnClickListener(v -> {
+            onClickRedo();
+        });
+        iv_action_undo.setOnClickListener(v -> {
+            onClickUndo();
+        });
+        iv_action.setOnClickListener(v -> {
+            onClickAction();
+        });
+        iv_action_txt_color.setOnClickListener(v -> {
+            onClickTextColor();
+        });
+        iv_action_txt_bg_color.setOnClickListener(v -> {
+            onClickHighlight();
+        });
+        iv_action_line_height.setOnClickListener(v -> {
+            onClickLineHeight();
+        });
+        iv_action_insert_image.setOnClickListener(v -> {
+            onClickInsertImage();
         });
     }
 
@@ -143,9 +212,12 @@ import java.util.List;
         imagePicker.setOutPutY(256);
     }
 
+    @SuppressLint("AddJavascriptInterface")
     private void initView() {
-        mWebView.setWebViewClient(new WebViewClient() {
-            @Override public void onPageStarted(WebView view, String url, Bitmap favicon) {
+        WebView webView = findViewById(R.id.wv_container);
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
             }
 
@@ -155,17 +227,18 @@ import java.util.List;
             }
         });
 
-        mWebView.setWebChromeClient(new CustomWebChromeClient());
-        mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.getSettings().setDomStorageEnabled(true);
+        webView.setWebChromeClient(new CustomWebChromeClient());
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setDomStorageEnabled(true);
         mRichEditorCallback = new MRichEditorCallback();
-        mWebView.addJavascriptInterface(mRichEditorCallback, "MRichEditor");
-        mWebView.loadUrl("file:///android_asset/richEditor.html");
-        mRichEditorAction = new RichEditorAction(mWebView);
+        webView.addJavascriptInterface(mRichEditorCallback, "MRichEditor");
+        webView.loadUrl("file:///android_asset/richEditor.html");
+        mRichEditorAction = new RichEditorAction(webView);
     }
 
     private class CustomWebChromeClient extends WebChromeClient {
-        @Override public void onProgressChanged(WebView view, int newProgress) {
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
             if (newProgress == 100) {
                 if (!TextUtils.isEmpty(htmlContent)) {
@@ -175,12 +248,13 @@ import java.util.List;
             }
         }
 
-        @Override public void onReceivedTitle(WebView view, String title) {
+        @Override
+        public void onReceivedTitle(WebView view, String title) {
             super.onReceivedTitle(view, title);
         }
     }
 
-    @OnClick(R.id.iv_action) void onClickAction() {
+    void onClickAction() {
         if (flAction.getVisibility() == View.VISIBLE) {
             flAction.setVisibility(View.GONE);
         } else {
@@ -194,54 +268,55 @@ import java.util.List;
     private RichEditorCallback.OnGetHtmlListener onGetHtmlListener = html -> {
         if (TextUtils.isEmpty(html)) {
             Toast.makeText(RichEditorActivity.this, "Empty Html String", Toast.LENGTH_SHORT)
-                .show();
+                    .show();
             return;
         }
         Toast.makeText(RichEditorActivity.this, html, Toast.LENGTH_SHORT).show();
     };
 
-    @OnClick(R.id.iv_get_html) void onClickGetHtml() {
+    void onClickGetHtml() {
         mRichEditorAction.refreshHtml(mRichEditorCallback, onGetHtmlListener);
     }
 
-    @OnClick(R.id.iv_action_undo) void onClickUndo() {
+    void onClickUndo() {
         mRichEditorAction.undo();
     }
 
-    @OnClick(R.id.iv_action_redo) void onClickRedo() {
+    void onClickRedo() {
         mRichEditorAction.redo();
     }
 
-    @OnClick(R.id.iv_action_txt_color) void onClickTextColor() {
+    void onClickTextColor() {
         mRichEditorAction.foreColor("blue");
     }
 
-    @OnClick(R.id.iv_action_txt_bg_color) void onClickHighlight() {
+    void onClickHighlight() {
         mRichEditorAction.backColor("red");
     }
 
-    @OnClick(R.id.iv_action_line_height) void onClickLineHeight() {
+    void onClickLineHeight() {
         mRichEditorAction.lineHeight(20);
     }
 
-    @OnClick(R.id.iv_action_insert_image) void onClickInsertImage() {
+    void onClickInsertImage() {
         Intent intent = new Intent(this, ImageGridActivity.class);
         startActivityForResult(intent, REQUEST_CODE_CHOOSE);
     }
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == ImagePicker.RESULT_CODE_ITEMS
-            && data != null
-            && requestCode == REQUEST_CODE_CHOOSE) {
+                && data != null
+                && requestCode == REQUEST_CODE_CHOOSE) {
             ArrayList<ImageItem> images =
-                (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
+                    (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             if (images != null && !images.isEmpty()) {
 
                 //1.Insert the Base64 String (Base64.NO_WRAP)
                 ImageItem imageItem = images.get(0);
                 mRichEditorAction.insertImageData(imageItem.name,
-                    encodeFileToBase64Binary(imageItem.path));
+                        encodeFileToBase64Binary(imageItem.path));
 
                 //2.Insert the ImageUrl
                 //mRichEditorAction.insertImageUrl(
@@ -256,45 +331,49 @@ import java.util.List;
         return new String(encoded);
     }
 
-    @OnClick(R.id.iv_action_insert_link) void onClickInsertLink() {
+    void onClickInsertLink() {
         KeyboardUtils.hideSoftInput(RichEditorActivity.this);
         EditHyperlinkFragment fragment = new EditHyperlinkFragment();
         fragment.setOnHyperlinkListener(
-            (address, text) -> mRichEditorAction.createLink(text, address));
+                (address, text) -> mRichEditorAction.createLink(text, address));
         getSupportFragmentManager().beginTransaction()
-            .add(R.id.fl_container, fragment, EditHyperlinkFragment.class.getName())
-            .commit();
+                .add(R.id.fl_container, fragment, EditHyperlinkFragment.class.getName())
+                .commit();
     }
 
-    @OnClick(R.id.iv_action_table) void onClickInsertTable() {
+    void onClickInsertTable() {
         KeyboardUtils.hideSoftInput(RichEditorActivity.this);
         EditTableFragment fragment = new EditTableFragment();
         fragment.setOnTableListener((rows, cols) -> mRichEditorAction.insertTable(rows, cols));
         getSupportFragmentManager().beginTransaction()
-            .add(R.id.fl_container, fragment, EditHyperlinkFragment.class.getName())
-            .commit();
+                .add(R.id.fl_container, fragment, EditHyperlinkFragment.class.getName())
+                .commit();
     }
 
-    @Override public void onResume() {
+    @Override
+    public void onResume() {
         super.onResume();
     }
 
-    @Override public void onPause() {
+    @Override
+    public void onPause() {
         super.onPause();
         if (flAction.getVisibility() == View.INVISIBLE) {
             flAction.setVisibility(View.GONE);
         }
     }
 
-    @Override public void onDestroy() {
+    @Override
+    public void onDestroy() {
         super.onDestroy();
     }
 
     class MRichEditorCallback extends RichEditorCallback {
 
-        @Override public void notifyFontStyleChange(ActionType type, final String value) {
+        @Override
+        public void notifyFontStyleChange(ActionType type, final String value) {
             ActionImageView actionImageView =
-                (ActionImageView) llActionBarContainer.findViewWithTag(type);
+                    (ActionImageView) llActionBarContainer.findViewWithTag(type);
             if (actionImageView != null) {
                 actionImageView.notifyFontStyleChange(type, value);
             }
@@ -312,7 +391,8 @@ import java.util.List;
             this.mRichEditorAction = mRichEditorAction;
         }
 
-        @Override public void onActionPerform(ActionType type, Object... values) {
+        @Override
+        public void onActionPerform(ActionType type, Object... values) {
             if (mRichEditorAction == null) {
                 return;
             }
